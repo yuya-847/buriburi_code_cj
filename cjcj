@@ -1,0 +1,43 @@
+import random
+#---------------------------------------------------------------------------------------------
+class player_status:#プレイヤーのステータス
+    def __init__(self,name,hp=50,mp=30,gold=30):#左から順にプレイヤー名、体力、マナ、金
+        self.name = name
+        self.hp = str(hp)
+        self.mp = str(mp)
+        self.gold = str(gold)
+    def output(self):#ステータス表示させる
+        print("name:" + self.name +",hp:"+ self.hp +",mp:"+ self.mp +",gold:"+ self.gold)
+#---------------------------------------------------------------------------------------------
+card_list =[]
+class Weapon():#カードのステータス
+    def __init__(self,spell,pow,value):#spellに名前、powに火力、valueに値段
+        self.spell = spell
+        self.pow = str(pow)
+        self.value = str(value)
+#---------------------------------------------------------------------------------------------
+#カードリスト作成
+card_0 = Weapon("sword",15,15)
+card_1 = Weapon("hammer",10,10)
+card_2 = Weapon("mace",10,8)
+card_3 = Weapon("blade",6,3)
+card_4 = Weapon("nife",3,1)
+#card_X = Card("spell",pow,value)#カード追加時に使う
+#---------------------------------------------------------------------------------------------
+#card_listに文字列としてカードリストを入力。入力したリストは「eval()」で関数に戻す。
+card_num = 0
+for i in range(5):#range()に最大カードナンバー-1を入力
+    card_list.append("card_"+str(card_num))
+    card_num += 1
+#---------------------------------------------------------------------------------------------
+player_name = input("名前をどうぞ:")
+print("コンニチハ、" + player_name + "＝サン")
+player = player_status(player_name)
+player.output()
+#---------------------------------------------------------------------------------------------
+hand = []#handに7枚カードを追加
+for i in range(7):
+    hand.append(random.choice(card_list))
+print(hand)
+#print(eval(card_list[4]).value)#eval(文字列)で関数変換
+#---------------------------------------------------------------------------------------------
