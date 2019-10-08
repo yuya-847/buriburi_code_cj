@@ -10,12 +10,17 @@ class player_status:#プレイヤーのステータス
     def output(self):#ステータス表示させる
         print("name:" + self.name +",hp:"+ self.hp +",mp:"+ self.mp +",gold:"+ self.gold)
 #---------------------------------------------------------------------------------------------
+#仮想エネミー
+enemy_name = "ぷももえんげ"
+enemy = player_status(enemy_name)
+enemy_death_count = int(enemy.hp)
+#---------------------------------------------------------------------------------------------
 card_list =[]
 class Weapon():#カードのステータス
-    def __init__(self,spell,pow,value):#spellに名前、powに火力、valueに値段
+    def __init__(self,spell,pow,val):#spellに名前、powに火力、valに値段
         self.spell = spell
         self.pow = str(pow)
-        self.value = str(value)
+        self.val = str(val)
 #---------------------------------------------------------------------------------------------
 #カードリスト作成
 card_0 = Weapon("sword",15,15)
@@ -23,7 +28,7 @@ card_1 = Weapon("hammer",10,10)
 card_2 = Weapon("mace",10,8)
 card_3 = Weapon("blade",6,3)
 card_4 = Weapon("nife",3,1)
-#card_X = Card("spell",pow,value)#カード追加時に使う
+#card_X = Card("spell",pow,val)#カード追加時に使う
 #---------------------------------------------------------------------------------------------
 #card_listに文字列としてカードリストを入力。入力したリストは「eval()」で関数に戻す。
 card_num = 0
@@ -35,11 +40,40 @@ player_name = input("名前をどうぞ:")
 print("コンニチハ、" + player_name + "＝サン")
 player = player_status(player_name)
 player.output()
+print("#---------------------------------------------------------------------------------------------")
 #---------------------------------------------------------------------------------------------
 hand = []#handに7枚カードを追加
 for i in range(7):
     hand.append(random.choice(card_list))
 hand.sort()
-print(hand)
-#print(eval(card_list[4]).value)#eval(文字列)で関数変換
+#print(eval(card_list[4]).val)#eval(文字列)で関数変換
 #---------------------------------------------------------------------------------------------
+#カード選択画面
+print("戦闘開始")
+print(enemy_name + "が現れた！")
+while(enemy_death_count > 0):
+    enemy.output()
+    index = 0
+    for hand_list in hand:
+        print(str(index)+"."+eval(hand_list).spell+"-威力:"+eval(hand_list).pow+", ", end="")
+        index += 1
+    print()#←改行させる
+    use_card = input("使用するカード番号を選択：")
+    #↓ここからカード番号の判定
+    if str.isdigit(use_card) == False:
+        print("カード番号を”整数で”入力してください")
+    else:
+        judgint = int(use_card)
+        if judgint < 0 or judgint >= index:#カード番号の判定。インデックス番号である0-6までの数字であるか確認
+            print("カード”番号”を入力してください")
+        else:
+            print(eval(hand[judgint]).spell+"で攻撃しました")
+            print(eval(hand[judgint]).pow+"のダメージ")
+            del hand[judgint]
+            hand.append(random.choice(card_list))
+            hand.sort()
+    enemy.hp =str( int(enemy.hp) - int(eval(hand[judgint]).pow))
+    enemy_death_count = int(enemy.hp)
+    if enemy_death_count <= 0:
+        break
+print("戦闘終了")
