@@ -1,26 +1,26 @@
 #ボードゲーム制作を目標にしてます。試しにGodFieldのような処理ができるように頑張ってます。
 import random
 #---------------------------------------------------------------------------------------------
-class player_status:#プレイヤーのステータス
-    def __init__(self,name,hp=50,mp=30,gold=30):#左から順にプレイヤー名、体力、マナ、金
+class player_status:#キャラクターのステータス
+    def __init__(self,name,hp=50,mp=30,gold=30):#左から順にキャラクター名、体力、マナ、金
         self.name = name
-        self.hp = str(hp)
-        self.mp = str(mp)
-        self.gold = str(gold)
+        self.hp = hp
+        self.mp = mp
+        self.gold = gold
     def output(self):#ステータス表示させる
-        print("name:" + self.name +",hp:"+ self.hp +",mp:"+ self.mp +",gold:"+ self.gold)
+        print("name:" + self.name +",hp:"+ str(self.hp) +",mp:"+ str(self.mp) +",gold:"+ str(self.gold))
 #---------------------------------------------------------------------------------------------
 #仮想エネミー
 enemy_name = "ぷももえんげ"
-enemy = player_status(enemy_name)
-enemy_death_count = int(enemy.hp)
+enemy = player_status(enemy_name,20,10,10)
+enemy_deadly = int(enemy.hp)
 #---------------------------------------------------------------------------------------------
 card_list =[]
 class Weapon():#カードのステータス
     def __init__(self,spell,pow,val):#spellに名前、powに火力、valに値段
         self.spell = spell
-        self.pow = str(pow)
-        self.val = str(val)
+        self.pow = pow
+        self.val = val
 #---------------------------------------------------------------------------------------------
 #カードリスト作成
 card_0 = Weapon("sword",15,15)
@@ -40,7 +40,7 @@ player_name = input("名前をどうぞ:")
 print("コンニチハ、" + player_name + "＝サン")
 player = player_status(player_name)
 player.output()
-print("#---------------------------------------------------------------------------------------------")
+print("---------------------------------------------------------------------------------------------")
 #---------------------------------------------------------------------------------------------
 hand = []#handに7枚カードを追加
 for i in range(7):
@@ -48,32 +48,38 @@ for i in range(7):
 hand.sort()
 #print(eval(card_list[4]).val)#eval(文字列)で関数変換
 #---------------------------------------------------------------------------------------------
-#カード選択画面
+#戦闘プロセス
 print("戦闘開始")
 print(enemy_name + "が現れた！")
-while(enemy_death_count > 0):
+while(enemy_deadly > 0):
     enemy.output()
     index = 0
     for hand_list in hand:
-        print(str(index)+"."+eval(hand_list).spell+"-威力:"+eval(hand_list).pow+", ", end="")
+        print(str(index)+"."+eval(hand_list).spell+"-威力:"+str(eval(hand_list).pow)+", ", end="")
         index += 1
     print()#←改行させる
     use_card = input("使用するカード番号を選択：")
     #↓ここからカード番号の判定
     if str.isdigit(use_card) == False:
         print("カード番号を”整数で”入力してください")
+        continue
     else:
         judgint = int(use_card)
         if judgint < 0 or judgint >= index:#カード番号の判定。インデックス番号である0-6までの数字であるか確認
-            print("カード”番号”を入力してください")
+            print("”使用する”カード番号を入力してください")
+            continue
         else:
             print(eval(hand[judgint]).spell+"で攻撃しました")
-            print(eval(hand[judgint]).pow+"のダメージ")
+            print(str(eval(hand[judgint]).pow)+"のダメージ")
             del hand[judgint]
             hand.append(random.choice(card_list))
             hand.sort()
-    enemy.hp =str( int(enemy.hp) - int(eval(hand[judgint]).pow))
-    enemy_death_count = int(enemy.hp)
-    if enemy_death_count <= 0:
+    enemy.hp -= eval(hand[judgint]).pow
+    enemy_deadly = enemy.hp
+    if enemy_deadly <= 0:
         break
 print("戦闘終了")
+player.gold += enemy.gold
+print(str(enemy.gold)+"gold入手した")
+player.output()
+#---------------------------------------------------------------------------------------------
