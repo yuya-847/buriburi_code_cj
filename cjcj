@@ -39,6 +39,7 @@ player.output()
 hand = []#handに7枚カードを追加
 for i in range(7):
     hand.append(random.choice(card_list))
+hand.sort()
 print(hand)
 #print(eval(card_list[4]).value)#eval(文字列)で関数変換
 #---------------------------------------------------------------------------------------------
